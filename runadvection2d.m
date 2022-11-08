@@ -2,7 +2,6 @@
 % YQW, 11 October 2022
 
 clear all;
-addpath('../src/');
 
 %% options to change
 

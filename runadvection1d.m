@@ -2,18 +2,18 @@
 % YQW, 11 October 2022
 
 clear all;
-addpath('../src/');
 
 %% options to change
 
 D   = 10;     % domain size
-N   = 101;     % number of grid cells
+N   = 101;    % number of grid cells
 cfl = 0.4;    % courant flow number limiter
 
 % constant velocities (can try both + and - velocities)
 u0 = 1;
 
-% initial condition type. options: {'square', 'triangle', 'gaussian'}
+% initial condition type. 
+% options: {'square', 'triangle', 'gaussian', 'squaretri', 'squaregauss'}
 ftype = 'gaussian';
 
 % advection scheme 
@@ -52,6 +52,15 @@ switch ftype
         f0 = movmean(movmean(f0,3),3);      % smooth
     case 'gaussian'
         f0 = exp(- (x / (D/6)).^2);
+    case 'squaretri'
+        f0(x>-3*D/4 & x< -D/4) = 1;
+        f0(x>   D/4 & x<  D/2) = (- D/4 + x(x>   D/4 & x<  D/2) )/(D/4);
+        f0(x>=  D/2 & x<3*D/4) = (3*D/4 - x(x>=  D/2 & x<3*D/4) )/(D/4);
+        f0 = movmean(movmean(f0,3),3);      % smooth
+    case 'squaregauss'
+        f0(x>-3*D/4 & x< -D/4) = 1;
+        f0 = f0 + exp(- ((x-D/2) / (D/8)).^2);
+        f0 = movmean(movmean(f0,3),3);      % smooth
 end
 
 %% plot initial condition
